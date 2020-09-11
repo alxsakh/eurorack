@@ -167,6 +167,14 @@ void Settings::Init() {
   // This settings will be written to flash memory the first time the module
   // is powered on, or if corrupted data is found in the flash sector,
   // following a major firmware upgrade.
+  persistent_data_.calibration_data.dac_offset[0] =	32430.1141657503f;
+  persistent_data_.calibration_data.dac_scale[0] =	-6211.1366590023f;
+  persistent_data_.calibration_data.dac_offset[1] =	32465.0708106216f;
+  persistent_data_.calibration_data.dac_scale[1] =	-6213.93208981347f;
+  persistent_data_.calibration_data.dac_offset[2] =	32487.9669471154f;
+  persistent_data_.calibration_data.dac_scale[2] =	-6222.95673076923f;
+  persistent_data_.calibration_data.dac_offset[3] =	32486.1011845011f;
+  persistent_data_.calibration_data.dac_scale[3] =	-6236.69945794017f;
   CalibrationData& c = persistent_data_.calibration_data;
   fill(&c.adc_scale[0], &c.adc_scale[ADC_CHANNEL_LAST], -2.0f);
   fill(&c.adc_offset[0], &c.adc_offset[ADC_CHANNEL_LAST], +1.0f);

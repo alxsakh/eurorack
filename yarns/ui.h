@@ -30,11 +30,11 @@
 #define YARNS_UI_H_
 
 #include "stmlib/stmlib.h"
-
+#include "yarns/drivers/ssd1306/ssd1306.h"
 #include "stmlib/ui/event_queue.h"
-
-#include "yarns/drivers/channel_leds.h"
 #include "yarns/drivers/display.h"
+#include "yarns/drivers/channel_leds.h"
+
 #include "yarns/drivers/encoder.h"
 #include "yarns/drivers/switches.h"
 
@@ -108,7 +108,7 @@ class Ui {
   }
   void DoEvents();
   void FlushEvents();
-
+  void OledPrint(const char* text);
   void Print(const char* text) {
     display_.Print(text, text);
   }

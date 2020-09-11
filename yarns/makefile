@@ -40,7 +40,7 @@ UPLOAD_COMMAND  = upload_combo_jtag
 
 # Packages to build
 TARGET         = yarns
-PACKAGES       = yarns yarns/drivers stmlib/utils stmlib/system
+PACKAGES       = yarns yarns/drivers stmlib/utils stmlib/system yarns/drivers/ssd1306
 RESOURCES      = yarns/resources
 
 TOOLCHAIN_PATH ?= /usr/local/arm-4.8.3/

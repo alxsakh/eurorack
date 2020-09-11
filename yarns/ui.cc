@@ -148,13 +148,22 @@ Ui::Mode Ui::modes_[] = {
     NULL, 0, 0 }
 };
 
+void Ui::OledPrint(const char* text){
+  SSD1306_Fill(SSD1306_COLOR_BLACK);
+  SSD1306_Puts((char *) text, &Font_11x18, SSD1306_COLOR_WHITE); //пишем надпись в выставленной позиции шрифтом "Font_7x10" белым цветом. 
+  SSD1306_GotoXY(0, 0);
+  SSD1306_UpdateScreen();
+}
+
 void Ui::Init() {
   encoder_.Init();
-  display_.Init();
+  
   switches_.Init();
   queue_.Init();
   leds_.Init();
-  
+  SSD1306_Init();
+SSD1306_GotoXY(0, 0); //Устанавливаем курсор в позицию 0;44. Сначала по горизонтали, потом вертикали.
+
   previous_mode_ = mode_ = UI_MODE_SPLASH;
   setting_index_ = 0;
   previous_tap_time_ = 0;
@@ -234,7 +243,6 @@ void Ui::Poll() {
       }
     }
   }
-  display_.RefreshSlow();
   
   // Read LED brightness from multi and copy to LEDs driver.
   uint8_t leds_brightness[kNumVoices];
@@ -271,15 +279,18 @@ const char octave[] = "-0123456789";
 
 void Ui::PrintParameterName() {
   display_.Print(setting().short_name, setting().name);
+  OledPrint(setting().name);
 }
 
 void Ui::PrintParameterValue() {
   settings.Print(setting(), buffer_);
-  display_.Print(buffer_, buffer_);
+  OledPrint(buffer_);
+  
 }
 
 void Ui::PrintMenuName() {
   display_.Print(commands_[command_index_].name);
+  OledPrint(commands_[command_index_].name);
 }
 
 void Ui::PrintProgramNumber() {
@@ -287,8 +298,10 @@ void Ui::PrintProgramNumber() {
     strcpy(buffer_, "P1");
     buffer_[1] += program_index_;
     display_.Print(buffer_);
+   OledPrint(buffer_);
   } else {
     display_.Print("--");
+    OledPrint("--");
   } 
 }
 
@@ -297,8 +310,10 @@ void Ui::PrintCalibrationVoiceNumber() {
     strcpy(buffer_, "*1");
     buffer_[1] += calibration_voice_;
     display_.Print(buffer_);
+    OledPrint(buffer_);
   } else {
     display_.Print("OK");
+    OledPrint("OK");
   } 
 }
 
@@ -306,12 +321,14 @@ void Ui::PrintCalibrationNote() {
   display_.Print(
       calibration_strings[calibration_note_],
       calibration_strings[calibration_note_]);
+       OledPrint(calibration_strings[calibration_note_]);
 }
 
 void Ui::PrintRecordingPart() {
   strcpy(buffer_, "R1");
   buffer_[1] += recording_part_;
   display_.Print(buffer_);
+  OledPrint(buffer_);
 }
 
 void Ui::PrintRecordingStatus() {
@@ -323,6 +340,7 @@ void Ui::PrintRecordingStatus() {
     buffer_[0] += n / 10;
     buffer_[1] += n % 10;
     display_.Print(buffer_);
+    OledPrint(buffer_);
   }
 }
 
@@ -332,6 +350,7 @@ void Ui::PrintPushItNote() {
   buffer_[1] = buffer_[1] == ' ' ? octave[push_it_note_ / 12] : buffer_[1];
   buffer_[2] = '\0';
   display_.Print(buffer_, buffer_);
+  OledPrint(buffer_);
 }
 
 void Ui::PrintLearning() {
@@ -371,6 +390,7 @@ void Ui::PrintFactoryTesting() {
 
 void Ui::PrintVersionNumber() {
   display_.Print(".5");
+  OledPrint(".5");
 }
 
 // Generic Handlers
