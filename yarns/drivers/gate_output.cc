@@ -34,7 +34,7 @@ namespace yarns {
 
 void GateOutput::Init() {
   GPIO_InitTypeDef gpio_init;
-  gpio_init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_10 | GPIO_Pin_11;
+  gpio_init.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_8 ;
   gpio_init.GPIO_Speed = GPIO_Speed_50MHz;
   gpio_init.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_Init(GPIOB, &gpio_init);
@@ -45,6 +45,7 @@ void GateOutput::Write(const bool* gate) {
   GPIO_WriteBit(GPIOB, GPIO_Pin_11, static_cast<BitAction>(gate[1]));
   GPIO_WriteBit(GPIOB, GPIO_Pin_0, static_cast<BitAction>(gate[2]));
   GPIO_WriteBit(GPIOB, GPIO_Pin_1, static_cast<BitAction>(gate[3]));
+  GPIO_WriteBit(GPIOB, GPIO_Pin_8, static_cast<BitAction>(gate[4]));
 }
 
 }  // namespace yarns
