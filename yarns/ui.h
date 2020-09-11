@@ -108,7 +108,7 @@ class Ui {
   }
   void DoEvents();
   void FlushEvents();
-  void OledPrint(const char* text);
+  
   void Print(const char* text) {
     display_.Print(text, text);
   }
@@ -192,6 +192,11 @@ class Ui {
   void DoInitCommand();
   void DoDumpCommand();
   void DoLearnCommand();
+  // Oled + menu
+  void OledPrint(const char* text);
+  void OledDrawMenu();
+  void MenuIncriment();
+  void MenuDecriment();
 
   struct Command {
     const char* name;
@@ -227,7 +232,10 @@ class Ui {
   
   UiMode mode_;
   UiMode previous_mode_;
-  
+
+  int8_t menu[5];
+  int8_t menu_index;
+
   int8_t setting_index_;
   int8_t command_index_;
   int8_t calibration_voice_;

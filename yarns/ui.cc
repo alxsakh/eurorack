@@ -150,10 +150,38 @@ Ui::Mode Ui::modes_[] = {
 
 void Ui::OledPrint(const char* text){
   SSD1306_Fill(SSD1306_COLOR_BLACK);
-  SSD1306_Puts((char *) text, &Font_11x18, SSD1306_COLOR_WHITE); //пишем надпись в выставленной позиции шрифтом "Font_7x10" белым цветом. 
-  SSD1306_GotoXY(0, 0);
+  int8_t xPos;
+  xPos= (int)(64-strlen(text)*11/2);
+  SSD1306_GotoXY(xPos, 25);
+  
+  SSD1306_Puts((char *) text, &Font_11x18, SSD1306_COLOR_WHITE); 
+ 
   SSD1306_UpdateScreen();
 }
+
+void Ui::MenuIncriment(){
+    
+}
+void Ui::MenuDecriment(){
+    
+}
+
+void Ui::OledDrawMenu(){
+  SSD1306_Fill(SSD1306_COLOR_BLACK);
+  SSD1306_GotoXY(0, 0);
+  SSD1306_DrawFilledRectangle(0,0,128,100,SSD1306_COLOR_BLACK);
+  SSD1306_DrawFilledRectangle(0,(menu_index)*20,128,20,SSD1306_COLOR_WHITE);
+  SSD1306_GotoXY(1, 1);
+  for (int8_t i = 0;i<3;i++){
+    SSD1306_GotoXY(0, i*20 +2 );
+    SSD1306_COLOR_t color = SSD1306_COLOR_WHITE;
+    if (i == menu_index) color = SSD1306_COLOR_BLACK;
+    SSD1306_Puts((char *) settings.setting(menu[i]).name, &Font_11x18, color); 
+  }
+  
+  SSD1306_UpdateScreen();
+}
+
 
 void Ui::Init() {
   encoder_.Init();
@@ -162,9 +190,14 @@ void Ui::Init() {
   queue_.Init();
   leds_.Init();
   SSD1306_Init();
-SSD1306_GotoXY(0, 0); //Устанавливаем курсор в позицию 0;44. Сначала по горизонтали, потом вертикали.
+  SSD1306_GotoXY(0, 0); 
 
   previous_mode_ = mode_ = UI_MODE_SPLASH;
+  menu_index=0;
+  for (int8_t i=0;i<3;i++){
+    menu[i]=settings.menu()[i];
+  }
+
   setting_index_ = 0;
   previous_tap_time_ = 0;
   tap_tempo_count_ = 0;
@@ -279,7 +312,8 @@ const char octave[] = "-0123456789";
 
 void Ui::PrintParameterName() {
   display_.Print(setting().short_name, setting().name);
-  OledPrint(setting().name);
+  OledDrawMenu();
+ // OledPrint(setting().name);
 }
 
 void Ui::PrintParameterValue() {
@@ -290,6 +324,7 @@ void Ui::PrintParameterValue() {
 
 void Ui::PrintMenuName() {
   display_.Print(commands_[command_index_].name);
+  
   OledPrint(commands_[command_index_].name);
 }
 
@@ -505,10 +540,29 @@ void Ui::OnClickFactoryTesting(const Event& e) {
 
 void Ui::OnIncrementParameterSelect(const Event& e) {
   setting_index_ += e.data;
+  menu_index += e.data;
+  if (menu_index>2) {
+    menu_index=2;
+    for (int8_t i=0;i<3;i++){
+      if (settings.menu()[setting_index_] != SETTING_LAST) 
+      menu[i]=settings.menu()[setting_index_-2+i];
+    }
+  }
+if (menu_index<0) {
+    menu_index=0;
+    for (int8_t i=0;i<3;i++){
+      if (setting_index_>=0)
+      menu[i]=settings.menu()[setting_index_+i];
+    }
+  }
+
+
   if (setting_index_ < 0) {
     setting_index_ = 0;
+    
   } else if (settings.menu()[setting_index_] == SETTING_LAST) {
     --setting_index_;
+    
   }
 }
 
